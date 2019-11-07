@@ -5,6 +5,8 @@
  * Author: 10up
  * Version: 0.1
  * Author URI: https://10up.com
+ *
+ * Work in this plugin is derived from https://github.com/humanmade/S3-Uploads
  */
 
 require_once ABSPATH . WPINC . '/class-wp-image-editor.php';
