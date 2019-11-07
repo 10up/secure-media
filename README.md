@@ -11,3 +11,5 @@ This is a proof of concept plugin to demonstrate storing designated assets in S3
 
 ## How It Works
 Designated files are stored in S3. Those files are not accessible via the web browser. To view a private file, you would navigate to `http://url.com/private/[file_id]`. That URL validates the user before displaying the file. The POC plugin will only show private files to logged in administrators.
+
+__Note:__ This plugin is not complete. It works for a basic upload directly in the media library but has not be tested elsewhere. File deletion from S3 is not functioning.
