@@ -26,20 +26,22 @@ define( 'AM_VERSION', '0.5' );
  */
 spl_autoload_register(
 	function( $class ) {
-			// project-specific namespace prefix.
-			$prefix = 'AdvancedMedia\\';
+		// project-specific namespace prefix.
+		$prefix = 'AdvancedMedia\\';
 
-			// base directory for the namespace prefix.
-			$base_dir = __DIR__ . '/inc/classes/';
+		// base directory for the namespace prefix.
+		$base_dir = __DIR__ . '/inc/classes/';
 
-			// does the class use the namespace prefix?
-			$len = strlen( $prefix );
+		// does the class use the namespace prefix?
+		$len = strlen( $prefix );
+
 		if ( strncmp( $prefix, $class, $len ) !== 0 ) {
 			return;
 		}
-			$relative_class = substr( $class, $len );
-			$file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
-			// if the file exists, require it.
+		$relative_class = substr( $class, $len );
+		$file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
+
+		// if the file exists, require it.
 		if ( file_exists( $file ) ) {
 			require $file;
 		}
@@ -58,6 +60,7 @@ require_once __DIR__ . '/inc/settings.php';
 
 Settings\setup();
 
-Storage::factory();
+Modules\S3\Module::factory();
+Modules\SingleViews\Module::factory();
 
 

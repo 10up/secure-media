@@ -63,7 +63,7 @@ function register_settings() {
 
 	add_settings_field(
 		's3_access_key_id',
-		esc_html__( 'AWS S3 Access Key ID', 'samsunglynk' ),
+		esc_html__( 'AWS S3 Access Key ID', 'advanced-media' ),
 		__NAMESPACE__ . '\s3_access_key_field',
 		'media',
 		'am_aws'
@@ -71,7 +71,7 @@ function register_settings() {
 
 	add_settings_field(
 		's3_secret_access_key',
-		esc_html__( 'AWS S3 Secret Access Key', 'samsunglynk' ),
+		esc_html__( 'AWS S3 Secret Access Key', 'advanced-media' ),
 		__NAMESPACE__ . '\s3_secret_key_field',
 		'media',
 		'am_aws'
@@ -79,7 +79,7 @@ function register_settings() {
 
 	add_settings_field(
 		's3_bucket',
-		esc_html__( 'AWS S3 Bucket', 'samsunglynk' ),
+		esc_html__( 'AWS S3 Bucket', 'advanced-media' ),
 		__NAMESPACE__ . '\s3_bucket_field',
 		'media',
 		'am_aws'
@@ -87,19 +87,39 @@ function register_settings() {
 
 	add_settings_field(
 		's3_region',
-		esc_html__( 'AWS S3 Region', 'samsunglynk' ),
+		esc_html__( 'AWS S3 Region', 'advanced-media' ),
 		__NAMESPACE__ . '\s3_region_field',
 		'media',
 		'am_aws'
 	);
 
-	add_settings_field(
-		's3_storage_method',
-		esc_html__( 'AWS S3 Image Storage Method', 'samsunglynk' ),
-		__NAMESPACE__ . '\s3_storage_method',
-		'media',
-		'am_aws'
+	add_settings_section(
+		'am_front_end',
+		esc_html__( 'Front End', 'advanced-media' ),
+		'',
+		'media'
 	);
+
+	add_settings_field(
+		'show_single_view',
+		esc_html__( 'Show single post view for media items', 'advanced-media' ),
+		__NAMESPACE__ . '\show_single_view',
+		'media',
+		'am_front_end'
+	);
+}
+
+/**
+ * Output single view field
+ *
+ * @since 1.0
+ */
+function show_single_view() {
+	$value = Utils\get_settings( 'show_single_view' );
+	?>
+	<input name="am_settings[show_single_view]" <?php checked( 'yes', $value ); ?> type="radio" id="am_show_single_view_yes" value="yes"> <label for="am_show_single_view_yes"><?php esc_html_e( 'Yes', 'advanced-media' ); ?></label><br>
+	<input name="am_settings[show_single_view]" <?php checked( 'no', $value ); ?> type="radio" id="am_show_single_view_no" value="no"> <label for="am_show_single_view_no"><?php esc_html_e( 'No', 'advanced-media' ); ?></label>
+	<?php
 }
 
 /**
@@ -147,18 +167,5 @@ function s3_access_key_field( $args ) {
 	$value = Utils\get_settings( 's3_access_key_id' );
 	?>
 	<input name="am_settings[s3_access_key_id]" type="text" id="am_s3_access_key_id" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
-	<?php
-}
-
-/**
- * Output storage type field
- *
- * @since 1.0
- */
-function s3_storage_method() {
-	$value = Utils\get_settings( 's3_storage_method' );
-	?>
-	<input name="am_settings[s3_storage_method]" <?php checked( 'all', $value ); ?> type="radio" id="am_storage_method_all" value="all"> <label for="am_storage_method_all">Store all media in S3</label><br>
-	<input name="am_settings[s3_storage_method]" <?php checked( 'private', $value ); ?> type="radio" id="am_storage_method_private" value="private"> <label for="am_storage_method_private">Only store private media in S3</label>
 	<?php
 }

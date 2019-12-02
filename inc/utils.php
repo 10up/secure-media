@@ -45,6 +45,7 @@ function get_settings( $setting_key = null ) {
 		's3_storage_method'    => 'all',
 		's3_bucket'            => '',
 		's3_region'            => 'us-west-1',
+		'show_single_view'     => 'no',
 	];
 
 	$settings = ( AM_IS_NETWORK ) ? get_site_option( 'am_settings', [] ) : get_option( 'am_settings', [] );

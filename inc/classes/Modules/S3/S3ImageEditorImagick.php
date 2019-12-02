@@ -5,7 +5,7 @@
  * @package advanced-media
  * @since   1.0
  */
-namespace AdvancedMedia;
+namespace AdvancedMedia\Modules\S3;
 
 use \WP_Image_Editor_Imagick;
 

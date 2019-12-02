@@ -1,5 +1,11 @@
 <?php
-namespace AdvancedMedia;
+/**
+ * Stream wrapper class
+ *
+ * @since  1.0
+ * @package  advanced-media
+ */
+namespace AdvancedMedia\Modules\S3;
 
 use Aws\S3\S3ClientInterface;
 use Aws\CacheInterface;

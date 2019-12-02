@@ -5,10 +5,10 @@
  * @since  1.0
  * @package  advanced-media
  */
-namespace AdvancedMedia;
+namespace AdvancedMedia\Modules\S3;
 
 use AdvancedMedia\Utils;
-use \Aws\S3\S3Client;
+use \Aws\S3\S3Client as AWSS3;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * S3 class
  */
-class S3 {
+class S3Client {
 	/**
 	 * S3 client
 	 *
@@ -39,7 +39,7 @@ class S3 {
 		$params['signature'] = 'v4';
 		$params['region']    = $settings['s3_region'];
 
-		$this->s3_client = S3Client::factory( $params );
+		$this->s3_client = AWSS3::factory( $params );
 	}
 
 	/**
