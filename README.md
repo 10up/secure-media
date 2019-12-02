@@ -16,4 +16,4 @@ Stores all media files in S3. Files attached to non-public posts are stored priv
 
 ### Front End Views
 
-By default, not front end single pages are shown for media files.
+By default, no front end single pages are shown for media files.
