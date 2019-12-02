@@ -5,7 +5,7 @@ This plugins adds advanced media functionality into WordPress
 ## Setup
 
 * Run `composer install`
-* Configure in Settings > Media
+* Configure in `Settings > Media`
 
 
 ## Modules
@@ -14,6 +14,6 @@ This plugins adds advanced media functionality into WordPress
 
 Stores all media files in S3. Files attached to non-public posts are stored privately.
 
-## Front End Views
+### Front End Views
 
 By default, not front end single pages are shown for media files.
