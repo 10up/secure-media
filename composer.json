@@ -1,5 +1,26 @@
 {
-    "require": {
-        "aws/aws-sdk-php": "^3.114"
+  "name": "10up/advanced-media",
+  "description": "Advanced media functionality for WordPress.",
+  "type": "wordpress-plugin",
+  "license": ["GPL-2.0-only"],
+  "authors": [
+    {
+      "name": "Taylor Lovett",
+      "email": "taylorl@get10up.com"
+    },
+    {
+      "name": "10up",
+      "homepage": "http://10up.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "aws/aws-sdk-php": "^3.114"
+  },
+  "require": {
+    "php": ">=5.6"
+  },
+  "require-dev": {
+    "10up/phpcs-composer": "dev-master"
+  }
 }

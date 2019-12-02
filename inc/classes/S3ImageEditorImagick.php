@@ -1,6 +1,19 @@
 <?php
+/**
+ * Custom image editor class for S3
+ *
+ * @package advanced-media
+ * @since   1.0
+ */
+namespace AdvancedMedia;
 
-class S3_Image_Editor_Imagick extends WP_Image_Editor_Imagick {
+use \WP_Image_Editor_Imagick;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 
 	protected $temp_file_to_cleanup = null;
 

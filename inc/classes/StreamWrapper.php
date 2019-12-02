@@ -1,4 +1,5 @@
 <?php
+namespace AdvancedMedia;
 
 use Aws\S3\S3ClientInterface;
 use Aws\CacheInterface;
@@ -59,7 +60,7 @@ use Psr\Http\Message\StreamInterface;
  * - For "unlink" only: Any option that can be passed to the DeleteObject
  *   operation
  */
-class Stream_Wrapper
+class StreamWrapper
 {
 	/** @var resource|null Stream context (this is set by PHP) */
 	public $context;
