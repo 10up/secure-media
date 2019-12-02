@@ -17,6 +17,8 @@ class Module extends \AdvancedMedia\Modules\Module {
 
 	/**
 	 * URL slug to serve private media under
+	 *
+	 * @var  string
 	 */
 	const MEDIA_URL_SLUG = 'private-media';
 
@@ -24,6 +26,10 @@ class Module extends \AdvancedMedia\Modules\Module {
 	 * Setup file stream and hooks
 	 */
 	public function setup() {
+		if ( ! $this->is_setup() ) {
+			return;
+		}
+
 		$this->register_stream_wrapper();
 
 		add_filter( 'wp_get_attachment_url', [ $this, 'maybe_get_private_media_url' ], 10, 2 );
@@ -43,6 +49,17 @@ class Module extends \AdvancedMedia\Modules\Module {
 		add_action( 'transition_post_status', [ $this, 'maybe_publish_media' ], 10, 3 );
 
 		add_action( 'attachment_submitbox_misc_actions', [ $this, 'modify_submit_box' ] );
+	}
+
+	/**
+	 * Determine if we have proper s3 settings to use the module
+	 *
+	 * @return boolean
+	 */
+	protected function is_setup() {
+		$settings = Utils\get_settings();
+
+		return ( ! empty( $settings['s3_region'] ) && ! empty( $settings['s3_bucket'] ) && ! empty( $settings['s3_access_key_id'] ) && ! empty( $settings['s3_secret_access_key'] ) );
 	}
 
 	/**

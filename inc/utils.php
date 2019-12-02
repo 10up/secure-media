@@ -42,7 +42,6 @@ function get_settings( $setting_key = null ) {
 	$defaults = [
 		's3_secret_access_key' => '',
 		's3_access_key_id'     => '',
-		's3_storage_method'    => 'all',
 		's3_bucket'            => '',
 		's3_region'            => 'us-west-1',
 		'show_single_view'     => 'no',

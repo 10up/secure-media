@@ -1,15 +1,19 @@
-# Restricted Media (POC)
+# Advanced Media (Alpha)
 
-This is a proof of concept plugin to demonstrate storing designated assets in S3 and restricting access to them.
+This plugins adds advanced media functionality into WordPress
 
 ## Setup
 
 * Run `composer install`
-* Define the following constants in `wp-config.php`: `S3_UPLOADS_KEY`, `S3_UPLOADS_SECRET`, `S3_UPLOADS_REGION`, `S3_UPLOADS_BUCKET`
-* Add a filter to `blackstone_store_private`. Return `true` to store the asset privately in S3. The filter is passed a file array with the name of the file.
+* Configure in Settings > Media
 
 
-## How It Works
-Designated files are stored in S3. Those files are not accessible via the web browser. To view a private file, you would navigate to `http://url.com/private/[file_id]`. That URL validates the user before displaying the file. The POC plugin will only show private files to logged in administrators.
+## Modules
 
-__Note:__ This plugin is not complete. It works for a basic upload directly in the media library but has not be tested elsewhere. File deletion from S3 is not functioning.
+### S3
+
+Stores all media files in S3. Files attached to non-public posts are stored privately.
+
+## Front End Views
+
+By default, not front end single pages are shown for media files.
