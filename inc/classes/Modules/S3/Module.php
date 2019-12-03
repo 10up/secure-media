@@ -49,6 +49,26 @@ class Module extends \AdvancedMedia\Modules\Module {
 		add_action( 'transition_post_status', [ $this, 'maybe_publish_media' ], 10, 3 );
 
 		add_action( 'attachment_submitbox_misc_actions', [ $this, 'modify_submit_box' ] );
+
+		add_action( 'edit_attachment', [ $this, 'update_visibility' ] );
+	}
+
+	/**
+	 * Update visibility via checkbox on edit form
+	 *
+	 * @param  int $post_id Post id
+	 */
+	public function update_visibility( $post_id ) {
+		if ( ! isset( $_POST['attachment_visibility_nonce'] ) || ! wp_verify_nonce( $_POST['attachment_visibility_nonce'], 'attachment_edit_visibility' ) ) {
+			return;
+		}
+
+		$current_visibility = ! ( (bool) get_post_meta( $post_id, 'am_private_media', true ) );
+		$new_visibility     = ! empty( $_POST['attachment_visibility'] );
+
+		if ( $current_visibility !== $new_visibility ) {
+			$this->change_media_visibility( $post_id, $new_visibility );
+		}
 	}
 
 	/**
@@ -63,6 +83,46 @@ class Module extends \AdvancedMedia\Modules\Module {
 	}
 
 	/**
+	 * Change media visibility
+	 *
+	 * @param  int     $post_id Post ID
+	 * @param  boolean $public  True for public
+	 */
+	public function change_media_visibility( $post_id, $public ) {
+		$sizes = get_intermediate_image_sizes();
+
+		$src_keys = [];
+
+		foreach ( $sizes as $size ) {
+			$src = wp_get_attachment_image_src( $post_id, $size );
+
+			$src_keys[] = $src[0];
+		}
+
+		foreach ( $src_keys as $key => $src_key ) {
+			$src_keys[ $key ] = ltrim( ltrim( wp_parse_url( $this->convert_url_to_file_path( $src_key ), PHP_URL_PATH ), '/' ), self::MEDIA_URL_SLUG . '/' );
+		}
+
+		$src_keys = array_unique( $src_keys );
+
+		$acl = $public ? 'public-read' : 'private';
+
+		foreach ( $src_keys as $src ) {
+			try {
+				S3Client::factory()->update_acl_async( $acl, $src );
+			} catch ( \Exception $e ) {
+				// Do nothing.
+			}
+		}
+
+		if ( $public ) {
+			delete_post_meta( $post_id, 'am_private_media' );
+		} else {
+			update_post_meta( $post_id, 'am_private_media', true );
+		}
+	}
+
+	/**
 	 * Show visibility status on edit attachment page
 	 */
 	public function modify_submit_box() {
@@ -70,19 +130,25 @@ class Module extends \AdvancedMedia\Modules\Module {
 
 		$private = get_post_meta( $post->ID, 'am_private_media', true );
 
-		echo '<div class="misc-pub-section misc-pub-visibility">';
+		?>
+		<div class="misc-pub-section misc-pub-visibility">
 
-		esc_html_e( 'Visibility:', 'advanced-media' );
+			<?php wp_nonce_field( 'attachment_edit_visibility', 'attachment_visibility_nonce' ); ?>
 
-		echo ' <strong>';
+			<?php esc_html_e( 'Visibility:', 'advanced-media' ); ?>
 
-		if ( ! empty( $private ) ) {
-			esc_html_e( 'Private', 'advanced-media' );
-		} else {
-			esc_html_e( 'Public', 'advanced-media' );
-		}
+			<label for="attachment_visibility">
+				<strong>
+					<input <?php checked( true, empty( $private ) ); ?> id="attachment_visibility" type="checkbox" name="attachment_visibility" value="public">
 
-		echo '</strong></div>';
+					<?php esc_html_e( 'Public', 'advanced-media' ); ?>
+
+				</strong>
+			</label>
+
+		</div>
+
+		<?php
 	}
 
 	/**
@@ -100,6 +166,10 @@ class Module extends \AdvancedMedia\Modules\Module {
 
 		// If we are not publishing post do nothing
 		if ( 'publish' !== $new_status ) {
+			return;
+		}
+
+		if ( 'attachment' === $post->post_type ) {
 			return;
 		}
 
@@ -493,9 +563,7 @@ class Module extends \AdvancedMedia\Modules\Module {
 
 		if ( ! empty( $post->post_parent ) ) {
 			if ( 'publish' !== get_post_status( $post->post_parent ) ) {
-				update_post_meta( $attachment_id, 'am_private_media', true );
-
-				S3Client::factory()->update_acl_async( 'private', $this->get_object_key( $attachment_id ) );
+				$this->change_media_visibility( $attachment_id, false );
 			}
 		}
 
