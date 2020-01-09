@@ -39,16 +39,19 @@ function is_network_activated( $plugin ) {
  * @return array
  */
 function get_settings( $setting_key = null ) {
-	$defaults = [
-		's3_secret_access_key' => '',
-		's3_access_key_id'     => '',
-		's3_bucket'            => '',
-		's3_region'            => 'us-west-1',
-		'show_single_view'     => 'no',
-	];
+	static $settings = null;
+	if ( null === $settings ) {
+		$defaults = [
+			's3_secret_access_key' => defined( 'AM_S3_SECRET_ACCESS_KEY' ) ? AM_S3_SECRET_ACCESS_KEY : '',
+			's3_access_key_id'     => defined( 'AM_S3_ACCESS_KEY_ID' ) ? AM_S3_ACCESS_KEY_ID : '',
+			's3_bucket'            => defined( 'AM_S3_BUCKET' ) ? AM_S3_BUCKET : '',
+			's3_region'            => defined( 'AM_S3_REGION' ) ? AM_S3_REGION : 'us-west-1',
+			'show_single_view'     => 'no',
+		];
 
-	$settings = ( AM_IS_NETWORK ) ? get_site_option( 'am_settings', [] ) : get_option( 'am_settings', [] );
-	$settings = wp_parse_args( $settings, $defaults );
+		$settings = ( AM_IS_NETWORK ) ? get_site_option( 'am_settings', [] ) : get_option( 'am_settings', [] );
+		$settings = wp_parse_args( $settings, $defaults );
+	}
 
 	if ( ! empty( $setting_key ) ) {
 		return $settings[ $setting_key ];

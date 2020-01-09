@@ -1,6 +1,6 @@
 <?php
 /**
- * Create the AM setting spage
+ * Create the AM settings page
  *
  * @package advanced-media
  * @since   1.0
