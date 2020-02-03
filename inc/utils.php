@@ -50,7 +50,15 @@ function get_settings( $setting_key = null ) {
 		];
 
 		$settings = ( AM_IS_NETWORK ) ? get_site_option( 'am_settings', [] ) : get_option( 'am_settings', [] );
-		$settings = wp_parse_args( $settings, $defaults );
+		if ( empty( $settings ) ) {
+			$settings = $defaults;
+		} else {
+			foreach ( $settings as $key => $setting ) {
+				if ( empty( $setting ) && ! empty( $defaults[ $key ] ) ) {
+					$settings[ $key ] = $defaults[ $key ];
+				}
+			}
+		}
 	}
 
 	if ( ! empty( $setting_key ) ) {
