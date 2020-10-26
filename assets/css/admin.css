@@ -1,0 +1,9 @@
+#poststuff .compat-field-sm_visibility {
+	display: none;
+}
+
+
+.sm-post-box-visible {
+	font-size: 12px;
+	margin-top: 3px;
+}

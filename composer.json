@@ -1,0 +1,33 @@
+{
+  "name": "10up/secure-media",
+  "description": "Store private media securely in WordPress.",
+  "type": "wordpress-plugin",
+  "license": ["GPL-2.0-only"],
+  "authors": [
+    {
+      "name": "Taylor Lovett",
+      "email": "taylorl@get10up.com"
+    },
+    {
+      "name": "10up",
+      "homepage": "http://10up.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.6",
+    "aws/aws-sdk-php": "^3.114"
+  },
+  "require-dev": {
+    "10up/phpcs-composer": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "SecureMedia\\": "inc/classes/"
+    }
+  },
+  "scripts": {
+    "lint": "phpcs secure-media.php inc",
+    "lint-fix": "phpcbf secure-media.php inc"
+  }
+}
