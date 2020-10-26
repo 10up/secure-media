@@ -6,5 +6,5 @@ This plugins adds secure media functionality into WordPress. Stores all media fi
 
 ## Setup
 
-* Run `composer install`
+* Install plugin.
 * Configure in `Settings > Media`
