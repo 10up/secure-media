@@ -63,6 +63,34 @@ class SecureMedia {
 		add_filter( 'attachment_fields_to_edit', [ $this, 'attachment_fields' ], 10, 2 );
 
 		add_action( 'wp_ajax_sm_set_visibility', [ $this, 'ajax_set_visibility' ] );
+
+		add_filter( 'template_redirect', [ $this, 'maybe_redirect_private_media' ] );
+	}
+
+	/**
+	 * Redirect media pages on the front end if private and user doesn't have access
+	 */
+	public function maybe_redirect_private_media() {
+		if ( is_attachment() && ! current_user_can( $this->get_view_private_media_capability() ) ) {
+			global $post;
+
+			$private = get_post_meta( $post->ID, 'sm_private_media', true );
+
+			if ( ! empty( $private ) ) {
+				wp_safe_redirect( home_url(), 301 );
+
+				exit;
+			}
+		}
+	}
+
+	/**
+	 * Get required cap for viewing private media
+	 *
+	 * @return string
+	 */
+	public function get_view_private_media_capability() {
+		return apply_filters( 'sm_private_media_capability', 'edit_posts' );
 	}
 
 	/**
@@ -695,7 +723,7 @@ class SecureMedia {
 			return;
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( $this->get_view_private_media_capability() ) ) {
 			wp_die( 'Not authorized.', '', [ 'response' => 401 ] );
 		}
 
