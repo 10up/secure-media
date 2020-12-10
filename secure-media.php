@@ -3,7 +3,7 @@
  * Plugin Name: Secure Media
  * Description: Store private media securely in WordPress
  * Author: Taylor Lovett, 10up
- * Version: 1.0
+ * Version: 1.0.1
  * Author URI: https://10up.com
  *
  * Work in this plugin is derived from https://github.com/humanmade/S3-Uploads
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'SM_URL', plugin_dir_url( __FILE__ ) );
 define( 'SM_PATH', plugin_dir_path( __FILE__ ) );
-define( 'SM_VERSION', '1.0' );
+define( 'SM_VERSION', '1.0.1' );
 
 require_once __DIR__ . '/inc/utils.php';
 

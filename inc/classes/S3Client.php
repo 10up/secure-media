@@ -128,7 +128,6 @@ class S3Client {
 	 */
 	public function get_bucket_url() {
 		$bucket = strtok( Utils\get_settings( 's3_bucket' ), '/' );
-		$path   = substr( Utils\get_settings( 's3_bucket' ), strlen( $bucket ) );
 
 		return 'https://' . $bucket . '.s3.amazonaws.com';
 	}

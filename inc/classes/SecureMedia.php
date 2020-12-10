@@ -64,7 +64,7 @@ class SecureMedia {
 
 		add_action( 'wp_ajax_sm_set_visibility', [ $this, 'ajax_set_visibility' ] );
 
-		add_filter( 'template_redirect', [ $this, 'maybe_redirect_private_media' ] );
+		add_action( 'template_redirect', [ $this, 'maybe_redirect_private_media' ] );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class SecureMedia {
 			wp_send_json_error();
 		}
 
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'secure-media' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'secure-media' ) ) {
 			wp_send_json_error();
 		}
 
@@ -123,7 +123,7 @@ class SecureMedia {
 		global $pagenow;
 
 		if ( ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) && 'attachment' !== get_post_type() ) {
-			return;
+			return $form_fields;
 		}
 
 		$form_fields['sm_visibility'] = [
@@ -715,8 +715,6 @@ class SecureMedia {
 	 * On private media request, conditionally show file
 	 */
 	public function maybe_show_private_media() {
-		global $wp_query;
-
 		$private_media = rtrim( get_query_var( 'private_media' ) );
 
 		if ( empty( $private_media ) ) {
