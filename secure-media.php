@@ -66,5 +66,3 @@ require_once __DIR__ . '/inc/settings.php';
 Settings\setup();
 
 SecureMedia::factory();
-
-

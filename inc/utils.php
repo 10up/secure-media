@@ -1,8 +1,8 @@
 <?php
 /**
- * AM utility functions
+ * Secure Media utility functions
  *
- * @since  1.0
+ * @since   1.0
  * @package secure-media
  */
 
@@ -11,7 +11,6 @@ namespace SecureMedia\Utils;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
 
 /**
  * Whether plugin is network activated
@@ -35,7 +34,7 @@ function is_network_activated( $plugin ) {
 /**
  * Get plugin settings
  *
- * @param  string $setting_key Setting key
+ * @param string $setting_key Setting key
  * @return array
  */
 function get_settings( $setting_key = null ) {

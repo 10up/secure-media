@@ -1,9 +1,9 @@
 <?php
 /**
- * S3 storage module
+ * Secure Media setup
  *
- * @since  1.0
- * @package  secure-media
+ * @since   1.0
+ * @package secure-media
  */
 
 namespace SecureMedia;
@@ -18,7 +18,7 @@ class SecureMedia {
 	/**
 	 * URL slug to serve private media under
 	 *
-	 * @var  string
+	 * @var string
 	 */
 	const MEDIA_URL_SLUG = 'private-media';
 
@@ -95,8 +95,6 @@ class SecureMedia {
 
 	/**
 	 * Set visibility via ajax
-	 *
-	 * @return void
 	 */
 	public function ajax_set_visibility() {
 		if ( ! isset( $_POST['public'] ) || empty( $_POST['postId'] ) ) {
@@ -113,7 +111,7 @@ class SecureMedia {
 	}
 
 	/**
-	 * Add credits to attachment fields
+	 * Add visibility to attachment fields
 	 *
 	 * @param array    $form_fields Form fields
 	 * @param \WP_Post $post Post object
@@ -137,8 +135,6 @@ class SecureMedia {
 
 	/**
 	 * Enqueue scripts
-	 *
-	 * @return void
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'sm_admin', SM_URL . 'dist/js/admin-script.js', [ 'jquery' ], SM_VERSION, true );
@@ -157,7 +153,7 @@ class SecureMedia {
 	/**
 	 * Update visibility via checkbox on edit form
 	 *
-	 * @param  int $post_id Post id
+	 * @param int $post_id Post id
 	 */
 	public function update_visibility( $post_id ) {
 		if ( ! isset( $_POST['attachment_visibility_nonce'] ) || ! wp_verify_nonce( $_POST['attachment_visibility_nonce'], 'attachment_edit_visibility' ) ) {
@@ -186,8 +182,8 @@ class SecureMedia {
 	/**
 	 * Set media visibility
 	 *
-	 * @param  int     $post_id Post ID
-	 * @param  boolean $public  True for public
+	 * @param int     $post_id Post ID
+	 * @param boolean $public  True for public
 	 * @return array Returns affected object keys
 	 */
 	public function set_media_visibility( $post_id, $public ) {
@@ -272,8 +268,8 @@ class SecureMedia {
 		global $post;
 
 		$private = get_post_meta( $post->ID, 'sm_private_media', true );
-
 		?>
+
 		<div class="misc-pub-section misc-pub-visibility">
 
 			<?php wp_nonce_field( 'attachment_edit_visibility', 'attachment_visibility_nonce' ); ?>
@@ -285,7 +281,7 @@ class SecureMedia {
 					<input <?php checked( true, empty( $private ) ); ?> id="attachment_visibility" type="checkbox" name="attachment_visibility" value="public">
 				</strong>
 			</label>
-			<div class="sm-post-box-visible"><em>Changing this will not update post content URLs.</em></div>
+			<div class="sm-post-box-visible"><em><?php esc_html_e( 'Changing this will not update post content URLs.', 'secure-media' ); ?></em></div>
 
 		</div>
 
@@ -326,7 +322,7 @@ class SecureMedia {
 	}
 
 	/**
-	 * Get private media parse from post content
+	 * Get private media parsed from post content
 	 *
 	 * @param int $post_id Post ID
 	 * @return array
@@ -380,7 +376,6 @@ class SecureMedia {
 	 * Make all post media public for a given post
 	 *
 	 * @param int $post_id Post id
-	 * @return void
 	 */
 	public function publicize_post_media_visibility( $post_id ) {
 		$post = get_post( $post_id );
@@ -450,7 +445,7 @@ class SecureMedia {
 	 *
 	 * @param string  $new_status New status
 	 * @param string  $old_status Old status
-	 * @param WP_Post $post      Post object
+	 * @param WP_Post $post Post object
 	 */
 	public function maybe_publish_media( $new_status, $old_status, $post ) {
 
@@ -475,7 +470,7 @@ class SecureMedia {
 	 * Get media ID from URL. Will strip size if appended to URL
 	 *
 	 * @param string $url Attachment URL
-	 * @return int
+	 * @return int|null
 	 */
 	public function get_post_id_from_media_url( $url ) {
 		global $wpdb;
@@ -522,7 +517,7 @@ class SecureMedia {
 	/**
 	 * Given any type of media path, URL, or ID, get the object key
 	 *
-	 * @param mixed $src_or_id Either a URL, path, or ID
+	 * @param string|int $src_or_id Either a URL, path, or ID
 	 * @return string
 	 */
 	public function get_object_key( $src_or_id ) {
@@ -551,11 +546,11 @@ class SecureMedia {
 	/**
 	 * If media is private, replace source set with private URLS
 	 *
-	 * @param  array  $sources       Current sources
-	 * @param  array  $size_array    Array of sizes
-	 * @param  string $image_src     Image src path
-	 * @param  array  $image_meta    Image meta
-	 * @param  int    $attachment_id Attachment ID
+	 * @param array  $sources Current sources
+	 * @param array  $size_array Array of sizes
+	 * @param string $image_src Image src path
+	 * @param array  $image_meta Image meta
+	 * @param int    $attachment_id Attachment ID
 	 * @return array
 	 */
 	public function maybe_use_private_media_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
@@ -575,9 +570,9 @@ class SecureMedia {
 	/**
 	 * During image_downsize, we conditionally substitute the URL if it's private media
 	 *
-	 * @param  string       $url  URL
-	 * @param  int          $id   Media id
-	 * @param  string|array $size Image size
+	 * @param string       $url URL
+	 * @param int          $id Media id
+	 * @param string|array $size Image size
 	 * @return string
 	 */
 	public function maybe_downsize_private_media( $url, $id, $size ) {
@@ -658,7 +653,7 @@ class SecureMedia {
 	/**
 	 * Get a local copy of the file.
 	 *
-	 * @param  string $file File path
+	 * @param string $file File path
 	 * @return string
 	 */
 	public function copy_image_from_s3( $file ) {
@@ -675,7 +670,7 @@ class SecureMedia {
 	/**
 	 * Add S3 Imagick editor class
 	 *
-	 * @param  array $editors Current editors
+	 * @param array $editors Current editors
 	 * @return array
 	 */
 	public function filter_editors( $editors ) {
@@ -724,7 +719,7 @@ class SecureMedia {
 		}
 
 		if ( ! current_user_can( $this->get_view_private_media_capability() ) ) {
-			wp_die( 'Not authorized.', '', [ 'response' => 401 ] );
+			wp_die( esc_html__( 'Not authorized.', 'secure-media' ), '', [ 'response' => 401 ] );
 		}
 
 		$private_media = rtrim( $private_media, '/' );
@@ -738,7 +733,7 @@ class SecureMedia {
 				$result = S3Client::factory()->get( $key );
 			}
 		} catch ( \Exception $e ) {
-			wp_die( 'Not found.', '', [ 'response' => 404 ] );
+			wp_die( esc_html__( 'Not found.', 'secure-media' ), '', [ 'response' => 404 ] );
 		}
 
 		header( "Content-Type: {$result['ContentType']}" );
@@ -761,8 +756,8 @@ class SecureMedia {
 	/**
 	 * Filter in correct attachment URL
 	 *
-	 * @param  string $url  Url
-	 * @param  int    $post_id Post id
+	 * @param string $url Url
+	 * @param int    $post_id Post id
 	 * @return string
 	 */
 	public function filter_attachment_url( $url, $post_id ) {
@@ -786,8 +781,8 @@ class SecureMedia {
 	/**
 	 * Maybe finish s3 upload
 	 *
-	 * @param  array $metadata    Media meta data
-	 * @param  int   $attachment_id Attachment id
+	 * @param array $metadata Media meta data
+	 * @param int   $attachment_id Attachment id
 	 * @return array
 	 */
 	public function end_upload_s3( $metadata, $attachment_id ) {
@@ -807,7 +802,7 @@ class SecureMedia {
 	/**
 	 * Filter in s3 upload directories
 	 *
-	 * @param  array $dirs Current upload dirs
+	 * @param array $dirs Current upload dirs
 	 * @return array
 	 */
 	public function filter_upload_dir( $dirs ) {
@@ -850,4 +845,5 @@ class SecureMedia {
 
 		return $instance;
 	}
+
 }
