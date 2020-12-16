@@ -2,8 +2,8 @@
 /**
  * Stream wrapper class
  *
- * @since  1.0
- * @package  secure-media
+ * @since 1.0
+ * @package secure-media
  */
 
 namespace SecureMedia;
@@ -168,7 +168,7 @@ class StreamWrapper
 					try {
 						$p = $this->params;
 						$p['Body'] = '';
-						$p = apply_filters( 's3_uploads_putObject_params', $p );
+						$p = apply_filters( 'secure_media_putObject_params', $p );
 						$this->getClient()->putObject($p);
 					} catch (Exception $e) {
 						return $this->triggerError($e->getMessage());
@@ -205,15 +205,15 @@ class StreamWrapper
 		}
 
 		/// Expires:
-		if ( defined( 'S3_UPLOADS_HTTP_EXPIRES' ) ) {
-			$params[ 'Expires' ] = S3_UPLOADS_HTTP_EXPIRES;
+		if ( defined( 'SECURE_MEDIA_HTTP_EXPIRES' ) ) {
+			$params[ 'Expires' ] = SECURE_MEDIA_HTTP_EXPIRES;
 		}
 		// Cache-Control:
-		if ( defined( 'S3_UPLOADS_HTTP_CACHE_CONTROL' ) ) {
-			if ( is_numeric( S3_UPLOADS_HTTP_CACHE_CONTROL ) ) {
-					 $params[ 'CacheControl' ] = 'max-age='. S3_UPLOADS_HTTP_CACHE_CONTROL;
+		if ( defined( 'SECURE_MEDIA_HTTP_CACHE_CONTROL' ) ) {
+			if ( is_numeric( SECURE_MEDIA_HTTP_CACHE_CONTROL ) ) {
+					 $params[ 'CacheControl' ] = 'max-age='. SECURE_MEDIA_HTTP_CACHE_CONTROL;
 			} else {
-					 $params[ 'CacheControl' ] = S3_UPLOADS_HTTP_CACHE_CONTROL;
+					 $params[ 'CacheControl' ] = SECURE_MEDIA_HTTP_CACHE_CONTROL;
 			}
 		}
 
@@ -224,7 +224,7 @@ class StreamWrapper
 		 *
 		 * @param array $params S3Client::putObject parameters.
 		 */
-		$params = apply_filters( 's3_uploads_putObject_params',  $params );
+		$params = apply_filters( 'secure_media_putObject_params',  $params );
 
 		$this->clearCacheKey("s3://{$params['Bucket']}/{$params['Key']}");
 		return $this->boolCall(function () use ($params) {
@@ -235,7 +235,7 @@ class StreamWrapper
 			 *
 			 * @param array  $params S3Client::putObject parameters.
 			 */
-			do_action( 's3_uploads_putObject', $params );
+			do_action( 'secure_media_putObject', $params );
 
 			return $bool;
 		});
@@ -1053,4 +1053,5 @@ class StreamWrapper
 
 		return $size !== null ? $size : $this->size;
 	}
+
 }
