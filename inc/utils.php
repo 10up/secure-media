@@ -39,10 +39,14 @@ function is_network_activated( $plugin ) {
  * @return array
  */
 function get_settings( $setting_key = null ) {
+	$default_bucket = ( SM_IS_NETWORK ) ? network_site_url() : site_url();
+	$default_bucket = preg_replace( '#https?://(www\.)?#i', '', $default_bucket );
+	$default_bucket = preg_replace( '#[^\w]#', '', $default_bucket );
+
 	$defaults = [
 		's3_secret_access_key' => '',
 		's3_access_key_id'     => '',
-		's3_bucket'            => '',
+		's3_bucket'            => $default_bucket,
 		's3_region'            => 'us-west-1',
 		's3_serve_from_wp'     => true,
 	];
