@@ -454,11 +454,6 @@ class SecureMedia {
 	 */
 	public function maybe_publish_media( $new_status, $old_status, $post ) {
 
-		// If post is currently published do nothing
-		if ( 'publish' === $old_status ) {
-			return;
-		}
-
 		// If we are not publishing post do nothing
 		if ( 'publish' !== $new_status ) {
 			return;
@@ -479,6 +474,16 @@ class SecureMedia {
 	 */
 	public function get_post_id_from_media_url( $url ) {
 		global $wpdb;
+
+		// Handle http..../private-media/ID
+		if ( preg_match( '#' . self::MEDIA_URL_SLUG . '/([0-9]+)$#i', $url ) ) {
+			return (int) preg_replace( '#.*' . self::MEDIA_URL_SLUG . '/([0-9]+)$#i', '$1', $url );
+		}
+
+		// Turn last dash into . e.g. uploads/1/12/file-png
+		if ( preg_match( '#\-([a-z0-9]+)$#i', $url, $matches ) ) {
+			$url = preg_replace( '#\-' . $matches[1] . '$#', '.' . $matches[1], $url );
+		}
 
 		$path = preg_replace( '#^.*?uploads/#', 'uploads/', $url );
 
