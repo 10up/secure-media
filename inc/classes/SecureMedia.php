@@ -769,8 +769,11 @@ class SecureMedia {
 	 * @return string
 	 */
 	public function filter_attachment_url( $url, $post_id ) {
+		// This happens for images uploaded when Secure Media was not active
 		if ( empty( get_post_meta( $post_id, 'sm_s3_key', true ) ) ) {
-			return $url;
+			$upload_dir = wp_get_upload_dir();
+
+			return str_replace( $upload_dir['url'], $this->old_upload_dirs['url'], $url );
 		}
 
 		$is_private = get_post_meta( $post_id, 'sm_private_media', true );
