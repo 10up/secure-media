@@ -220,6 +220,8 @@ class SecureMedia {
 			try {
 				if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
 					if ( $public ) {
+						mkdir( dirname( WP_CONTENT_DIR . '/' . $key ), 0777, true );
+
 						S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
 					} else {
 						unlink( WP_CONTENT_DIR . '/' . $key );
