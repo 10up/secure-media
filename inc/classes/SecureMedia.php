@@ -226,7 +226,9 @@ class SecureMedia {
 
 						S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
 					} else {
-						unlink( WP_CONTENT_DIR . '/' . $key );
+						if ( file_exists( WP_CONTENT_DIR . '/' . $key ) ) {
+							unlink( WP_CONTENT_DIR . '/' . $key );
+						}
 					}
 				}
 
@@ -426,7 +428,7 @@ class SecureMedia {
 				$url_or_id = preg_replace( '#^.*/([0-9]+)$#', '$1', trim( $url, '/' ) );
 			}
 
-			if ( ! Utils\get_settings( 's3_permanent' ) ) {
+			if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
 				$new_url = WP_CONTENT_URL . '/' . $this->get_object_key( $url_or_id );
 			} else {
 				$new_url = S3Client::factory()->get_bucket_url() . '/' . $this->get_object_key( $url_or_id );
