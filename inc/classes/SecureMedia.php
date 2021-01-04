@@ -568,12 +568,14 @@ class SecureMedia {
 	public function maybe_use_private_media_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
 		$is_private = get_post_meta( $attachment_id, 'sm_private_media', true );
 
-		if ( ! $is_private ) {
-			return $sources;
-		}
-
 		foreach ( $sources as $key => $source ) {
-			$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), home_url() . '/' . self::MEDIA_URL_SLUG, $source['url'] );
+			if ( ! $is_private ) {
+				if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
+					$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), WP_CONTENT_URL, $source['url'] );
+				}
+			} else {
+				$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), home_url() . '/' . self::MEDIA_URL_SLUG, $source['url'] );
+			}
 		}
 
 		return $sources;
