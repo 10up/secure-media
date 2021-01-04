@@ -801,10 +801,10 @@ class SecureMedia {
 
 		update_post_meta( $attachment_id, 'sm_s3_key', sanitize_text_field( 'uploads/' . get_post_meta( $attachment_id, '_wp_attached_file', true ) ) );
 
-		if ( apply_filters( 'sm_secure_all_new_media', true, $attachment_id ) || ( ! empty( $post->post_parent ) && 'publish' !== get_post_status( $post->post_parent ) ) ) {
-			$this->set_media_visibility( $attachment_id, false );
+		if ( ! empty( $post->post_parent ) ) {
+			$this->set_media_visibility( $attachment_id, ( 'publish' === get_post_status( $post->post_parent ) ) );
 		} else {
-			$this->set_media_visibility( $attachment_id, true );
+			$this->set_media_visibility( $attachment_id, ! apply_filters( 'sm_secure_all_new_media', true, $attachment_id ) );
 		}
 
 		return $metadata;
