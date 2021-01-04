@@ -10,6 +10,7 @@ namespace SecureMedia;
 
 use SecureMedia\Utils;
 use \Aws\S3\S3Client as AWSS3;
+use \Exception;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -50,12 +51,22 @@ class S3Client {
 	 * @return mixed
 	 */
 	public function delete( $key ) {
-		return $this->s3_client->deleteObject(
-			[
-				'Bucket' => Utils\get_settings( 's3_bucket' ),
-				'Key'    => $key,
-			]
-		);
+		$delete = false;
+
+		try {
+			$delete = $this->s3_client->deleteObject(
+				[
+					'Bucket' => Utils\get_settings( 's3_bucket' ),
+					'Key'    => $key,
+				]
+			);
+		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				trigger_error( $e->getMessage() ); // phpcs:ignore
+			}
+		}
+
+		return $delete;
 	}
 
 	/**
@@ -64,35 +75,55 @@ class S3Client {
 	 * @param string  $path Path to save file
 	 * @param string  $key Object key
 	 * @param boolean $delete_remote Delete remote copy or not
-	 * @return void
+	 * @return mixed
 	 */
 	public function save( $path, $key, $delete_remote = false ) {
-		$this->s3_client->getObject(
-			[
-				'Bucket' => Utils\get_settings( 's3_bucket' ),
-				'Key'    => $key,
-				'SaveAs' => $path,
-			]
-		);
+		$save = false;
+
+		try {
+			$save = $this->s3_client->getObject(
+				[
+					'Bucket' => Utils\get_settings( 's3_bucket' ),
+					'Key'    => $key,
+					'SaveAs' => $path,
+				]
+			);
+		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				trigger_error( $e->getMessage() ); // phpcs:ignore
+			}
+		}
 
 		if ( $delete_remote ) {
 			$this->delete( $key );
 		}
+
+		return $save;
 	}
 
 	/**
 	 * Get object by key
 	 *
 	 * @param  string $key Object key
-	 * @return array
+	 * @return mixed
 	 */
 	public function get( $key ) {
-		return $this->s3_client->getObject(
-			[
-				'Bucket' => Utils\get_settings( 's3_bucket' ),
-				'Key'    => $key,
-			]
-		);
+		$get = false;
+
+		try {
+			$get = $this->s3_client->getObject(
+				[
+					'Bucket' => Utils\get_settings( 's3_bucket' ),
+					'Key'    => $key,
+				]
+			);
+		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				trigger_error( $e->getMessage() ); // phpcs:ignore
+			}
+		}
+
+		return $get;
 	}
 
 	/**
@@ -103,13 +134,23 @@ class S3Client {
 	 * @return mixed
 	 */
 	public function update_acl( $acl, $key ) {
-		return $this->s3_client->putObjectAcl(
-			[
-				'Bucket' => Utils\get_settings( 's3_bucket' ),
-				'Key'    => $key,
-				'ACL'    => $acl,
-			]
-		);
+		$update = false;
+
+		try {
+			$update = $this->s3_client->putObjectAcl(
+				[
+					'Bucket' => Utils\get_settings( 's3_bucket' ),
+					'Key'    => $key,
+					'ACL'    => $acl,
+				]
+			);
+		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				trigger_error( $e->getMessage() ); // phpcs:ignore
+			}
+		}
+
+		return $update;
 	}
 
 	/**

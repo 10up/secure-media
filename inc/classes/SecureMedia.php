@@ -217,25 +217,21 @@ class SecureMedia {
 		$acl = $public ? 'public-read' : 'private';
 
 		foreach ( $keys as $key ) {
-			try {
-				if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
-					if ( $public ) {
-						if ( ! file_exists( dirname( WP_CONTENT_DIR . '/' . $key ) ) ) {
-							mkdir( dirname( WP_CONTENT_DIR . '/' . $key ), 0777, true );
-						}
+			if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
+				if ( $public ) {
+					if ( ! file_exists( dirname( WP_CONTENT_DIR . '/' . $key ) ) ) {
+						mkdir( dirname( WP_CONTENT_DIR . '/' . $key ), 0777, true );
+					}
 
-						S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
-					} else {
-						if ( file_exists( WP_CONTENT_DIR . '/' . $key ) ) {
-							unlink( WP_CONTENT_DIR . '/' . $key );
-						}
+					S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
+				} else {
+					if ( file_exists( WP_CONTENT_DIR . '/' . $key ) ) {
+						unlink( WP_CONTENT_DIR . '/' . $key );
 					}
 				}
-
-				S3Client::factory()->update_acl( $acl, $key );
-			} catch ( \Exception $e ) {
-				// Do nothing
 			}
+
+			S3Client::factory()->update_acl( $acl, $key );
 		}
 
 		if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
@@ -740,15 +736,15 @@ class SecureMedia {
 
 		$private_media = rtrim( $private_media, '/' );
 
-		try {
-			if ( is_numeric( $private_media ) ) {
-				$result = S3Client::factory()->get( $this->get_object_key( $private_media ) );
-			} else {
-				$key = $this->get_object_key( $private_media );
+		$key = $this->get_object_key( $private_media );
 
-				$result = S3Client::factory()->get( $key );
-			}
-		} catch ( \Exception $e ) {
+		if ( empty( $key ) ) {
+			wp_die( 'Not found.', '', [ 'response' => 404 ] );
+		}
+
+		$result = S3Client::factory()->get( $key );
+
+		if ( false === $result ) {
 			wp_die( 'Not found.', '', [ 'response' => 404 ] );
 		}
 
