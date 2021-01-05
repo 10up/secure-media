@@ -18,6 +18,10 @@ jQuery(document).ready(() => {
 
 		input.type = 'checkbox';
 
+		if (value) {
+			input.checked = true;
+		}
+
 		input.addEventListener('change', (event) => {
 			jQuery.ajax({
 				url: ajaxurl,

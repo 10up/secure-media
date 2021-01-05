@@ -64,7 +64,7 @@ class SecureMedia {
 
 		add_action( 'wp_ajax_sm_set_visibility', [ $this, 'ajax_set_visibility' ] );
 
-		add_filter( 'template_redirect', [ $this, 'maybe_redirect_private_media' ] );
+		add_action( 'template_redirect', [ $this, 'maybe_redirect_private_media' ] );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class SecureMedia {
 			wp_send_json_error();
 		}
 
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'secure-media' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'secure-media' ) ) {
 			wp_send_json_error();
 		}
 
@@ -123,7 +123,7 @@ class SecureMedia {
 		global $pagenow;
 
 		if ( ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) && 'attachment' !== get_post_type() ) {
-			return;
+			return $form_fields;
 		}
 
 		$form_fields['sm_visibility'] = [
@@ -217,19 +217,21 @@ class SecureMedia {
 		$acl = $public ? 'public-read' : 'private';
 
 		foreach ( $keys as $key ) {
-			try {
-				if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
-					if ( $public ) {
-						S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
-					} else {
+			if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
+				if ( $public ) {
+					if ( ! file_exists( dirname( WP_CONTENT_DIR . '/' . $key ) ) ) {
+						mkdir( dirname( WP_CONTENT_DIR . '/' . $key ), 0777, true );
+					}
+
+					S3Client::factory()->save( WP_CONTENT_DIR . '/' . $key, $key );
+				} else {
+					if ( file_exists( WP_CONTENT_DIR . '/' . $key ) ) {
 						unlink( WP_CONTENT_DIR . '/' . $key );
 					}
 				}
-
-				S3Client::factory()->update_acl( $acl, $key );
-			} catch ( \Exception $e ) {
-				// Do nothing
 			}
+
+			S3Client::factory()->update_acl( $acl, $key );
 		}
 
 		if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
@@ -422,7 +424,7 @@ class SecureMedia {
 				$url_or_id = preg_replace( '#^.*/([0-9]+)$#', '$1', trim( $url, '/' ) );
 			}
 
-			if ( ! Utils\get_settings( 's3_permanent' ) ) {
+			if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
 				$new_url = WP_CONTENT_URL . '/' . $this->get_object_key( $url_or_id );
 			} else {
 				$new_url = S3Client::factory()->get_bucket_url() . '/' . $this->get_object_key( $url_or_id );
@@ -454,11 +456,6 @@ class SecureMedia {
 	 */
 	public function maybe_publish_media( $new_status, $old_status, $post ) {
 
-		// If post is currently published do nothing
-		if ( 'publish' === $old_status ) {
-			return;
-		}
-
 		// If we are not publishing post do nothing
 		if ( 'publish' !== $new_status ) {
 			return;
@@ -479,6 +476,16 @@ class SecureMedia {
 	 */
 	public function get_post_id_from_media_url( $url ) {
 		global $wpdb;
+
+		// Handle http..../private-media/ID
+		if ( preg_match( '#' . self::MEDIA_URL_SLUG . '/([0-9]+)$#i', $url ) ) {
+			return (int) preg_replace( '#.*' . self::MEDIA_URL_SLUG . '/([0-9]+)$#i', '$1', $url );
+		}
+
+		// Turn last dash into . e.g. uploads/1/12/file-png
+		if ( preg_match( '#\-([a-z0-9]+)$#i', $url, $matches ) ) {
+			$url = preg_replace( '#\-' . $matches[1] . '$#', '.' . $matches[1], $url );
+		}
 
 		$path = preg_replace( '#^.*?uploads/#', 'uploads/', $url );
 
@@ -561,12 +568,14 @@ class SecureMedia {
 	public function maybe_use_private_media_srcset( $sources, $size_array, $image_src, $image_meta, $attachment_id ) {
 		$is_private = get_post_meta( $attachment_id, 'sm_private_media', true );
 
-		if ( ! $is_private ) {
-			return $sources;
-		}
-
 		foreach ( $sources as $key => $source ) {
-			$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), home_url() . '/' . self::MEDIA_URL_SLUG, $source['url'] );
+			if ( ! $is_private ) {
+				if ( Utils\get_settings( 's3_serve_from_wp' ) ) {
+					$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), WP_CONTENT_URL, $source['url'] );
+				}
+			} else {
+				$sources[ $key ]['url'] = str_replace( S3Client::factory()->get_bucket_url(), home_url() . '/' . self::MEDIA_URL_SLUG, $source['url'] );
+			}
 		}
 
 		return $sources;
@@ -715,8 +724,6 @@ class SecureMedia {
 	 * On private media request, conditionally show file
 	 */
 	public function maybe_show_private_media() {
-		global $wp_query;
-
 		$private_media = rtrim( get_query_var( 'private_media' ) );
 
 		if ( empty( $private_media ) ) {
@@ -729,15 +736,15 @@ class SecureMedia {
 
 		$private_media = rtrim( $private_media, '/' );
 
-		try {
-			if ( is_numeric( $private_media ) ) {
-				$result = S3Client::factory()->get( $this->get_object_key( $private_media ) );
-			} else {
-				$key = $this->get_object_key( $private_media );
+		$key = $this->get_object_key( $private_media );
 
-				$result = S3Client::factory()->get( $key );
-			}
-		} catch ( \Exception $e ) {
+		if ( empty( $key ) ) {
+			wp_die( 'Not found.', '', [ 'response' => 404 ] );
+		}
+
+		$result = S3Client::factory()->get( $key );
+
+		if ( false === $result ) {
 			wp_die( 'Not found.', '', [ 'response' => 404 ] );
 		}
 
@@ -766,8 +773,11 @@ class SecureMedia {
 	 * @return string
 	 */
 	public function filter_attachment_url( $url, $post_id ) {
+		// This happens for images uploaded when Secure Media was not active
 		if ( empty( get_post_meta( $post_id, 'sm_s3_key', true ) ) ) {
-			return $url;
+			$upload_dir = wp_get_upload_dir();
+
+			return str_replace( $upload_dir['url'], $this->old_upload_dirs['url'], $url );
 		}
 
 		$is_private = get_post_meta( $post_id, 'sm_private_media', true );
@@ -795,10 +805,10 @@ class SecureMedia {
 
 		update_post_meta( $attachment_id, 'sm_s3_key', sanitize_text_field( 'uploads/' . get_post_meta( $attachment_id, '_wp_attached_file', true ) ) );
 
-		if ( apply_filters( 'sm_secure_all_new_media', true, $attachment_id ) || ( ! empty( $post->post_parent ) && 'publish' !== get_post_status( $post->post_parent ) ) ) {
-			$this->set_media_visibility( $attachment_id, false );
+		if ( ! empty( $post->post_parent ) ) {
+			$this->set_media_visibility( $attachment_id, ( 'publish' === get_post_status( $post->post_parent ) ) );
 		} else {
-			$this->set_media_visibility( $attachment_id, true );
+			$this->set_media_visibility( $attachment_id, ! apply_filters( 'sm_secure_all_new_media', true, $attachment_id ) );
 		}
 
 		return $metadata;
