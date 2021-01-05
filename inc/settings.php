@@ -205,7 +205,7 @@ function s3_bucket_field() {
 	$value = Utils\get_settings( 's3_bucket' );
 	?>
 
-	<input name="sm_settings[s3_bucket]" type="text" id="sm_s3_bucket" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+	<input name="sm_settings[s3_bucket]" type="text" id="sm_s3_bucket" value="<?php echo esc_attr( $value ); ?>" class="regular-text"> <?php echo esc_html_e( 'Make sure this bucket is created and configured in AWS.', 'secure-media' ); ?>
 
 	<?php
 }
