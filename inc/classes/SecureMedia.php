@@ -51,7 +51,7 @@ class SecureMedia {
 
 		add_filter( 'image_downsize', [ $this, 'maybe_downsize_private_media' ], 10, 3 );
 
-		add_filter( 'wp_calculate_image_srcset', [ $this, 'maybe_use_private_media_srcset' ], 10, 5 );
+		add_filter( 'wp_calculate_image_srcset', [ $this, 'maybe_use_private_media_srcset' ], 100, 5 );
 
 		add_action( 'transition_post_status', [ $this, 'maybe_publish_media' ], 10, 3 );
 
@@ -590,6 +590,12 @@ class SecureMedia {
 	 * @return string
 	 */
 	public function maybe_downsize_private_media( $url, $id, $size ) {
+		$s3_key = get_post_meta( $id, 'sm_s3_key', true );
+
+		if ( empty( $s3_key ) ) {
+			return $url;
+		}
+
 		$is_private = get_post_meta( $id, 'sm_private_media', true );
 
 		if ( ! $is_private ) {
@@ -601,20 +607,24 @@ class SecureMedia {
 		$is_image = wp_attachment_is_image( $id );
 
 		$img_url          = wp_get_attachment_url( $id );
+		$set_img          = false;
 		$meta             = wp_get_attachment_metadata( $id );
 		$width            = 0;
 		$height           = 0;
 		$is_intermediate  = false;
-		$img_url_basename = wp_basename( $img_url );
+
+		$img_url = home_url() . '/' . self::MEDIA_URL_SLUG . '/' . dirname( $s3_key ) . '/';
 
 		// If the file isn't an image, attempt to replace its URL with a rendered image from its meta.
 		// Otherwise, a non-image type could be returned.
 		if ( ! $is_image ) {
 			if ( ! empty( $meta['sizes'] ) ) {
-				$img_url          = str_replace( $img_url_basename, $meta['sizes']['full']['file'], $img_url );
-				$img_url_basename = $meta['sizes']['full']['file'];
-				$width            = $meta['sizes']['full']['width'];
-				$height           = $meta['sizes']['full']['height'];
+				$set_img = true;
+
+				$img_url .= $meta['sizes']['full']['file'];
+
+				$width  = $meta['sizes']['full']['width'];
+				$height = $meta['sizes']['full']['height'];
 			} else {
 				add_filter( 'wp_get_attachment_url', [ $this, 'filter_attachment_url' ], 10, 2 );
 
@@ -626,20 +636,22 @@ class SecureMedia {
 
 		// try for a new style intermediate size
 		if ( $intermediate ) {
-			$img_url         = str_replace( $img_url_basename, $intermediate['file'], $img_url );
+			$img_url        .= $intermediate['file'];
 			$width           = $intermediate['width'];
 			$height          = $intermediate['height'];
 			$is_intermediate = true;
+			$set_img         = true;
 		} elseif ( 'thumbnail' === $size ) {
 			$thumb_file = wp_get_attachment_thumb_file( $id );
 			$info       = getimagesize( $thumb_file );
 
 			// fall back to the old thumbnail
 			if ( $thumb_file && $info ) {
-				$img_url         = str_replace( $img_url_basename, wp_basename( $thumb_file ), $img_url );
+				$img_url        .= wp_basename( $thumb_file );
 				$width           = $info[0];
 				$height          = $info[1];
 				$is_intermediate = true;
+				$set_img         = true;
 			}
 		}
 
@@ -649,17 +661,18 @@ class SecureMedia {
 			$height = $meta['height'];
 		}
 
-		if ( $img_url ) {
+		if ( $set_img ) {
 			// we have the actual image size, but might need to further constrain it if content_width is narrower
 			list( $width, $height ) = image_constrain_size_for_editor( $width, $height, $size );
 
 			add_filter( 'wp_get_attachment_url', [ $this, 'filter_attachment_url' ], 10, 2 );
 
-			$img_url = str_replace( S3Client::factory()->get_bucket_url(), home_url() . '/' . self::MEDIA_URL_SLUG, $img_url );
 			$img_url = preg_replace( '#^(.*)\.(.*)$#', '$1-$2', $img_url );
 
 			return array( $img_url, $width, $height, $is_intermediate );
 		}
+
+		add_filter( 'wp_get_attachment_url', [ $this, 'filter_attachment_url' ], 10, 2 );
 
 		return false;
 	}
@@ -734,7 +747,7 @@ class SecureMedia {
 			wp_die( 'Not authorized.', '', [ 'response' => 401 ] );
 		}
 
-		$private_media = rtrim( $private_media, '/' );
+		$private_media = rtrim( strtok( $private_media, '?' ), '/' );
 
 		$key = $this->get_object_key( $private_media );
 
@@ -777,7 +790,7 @@ class SecureMedia {
 		if ( empty( get_post_meta( $post_id, 'sm_s3_key', true ) ) ) {
 			$upload_dir = wp_get_upload_dir();
 
-			return str_replace( $upload_dir['url'], $this->old_upload_dirs['url'], $url );
+			return str_replace( S3Client::factory()->get_bucket_url(), dirname( $this->old_upload_dirs['baseurl'] ), $url );
 		}
 
 		$is_private = get_post_meta( $post_id, 'sm_private_media', true );
@@ -822,9 +835,11 @@ class SecureMedia {
 	 */
 	public function filter_upload_dir( $dirs ) {
 
-		$this->old_upload_dirs = $dirs;
-
 		$content_dir_name = basename( WP_CONTENT_DIR );
+
+		$dirs = _wp_upload_dir();
+
+		$this->old_upload_dirs = $dirs;
 
 		$dirs['path']    = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['path'] );
 		$dirs['basedir'] = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['basedir'] );
