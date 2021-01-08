@@ -39,10 +39,10 @@ class SecureMedia {
 
 		$this->register_stream_wrapper();
 
-		add_filter( 'wp_get_attachment_url', [ $this, 'filter_attachment_url' ], 10, 2 );
+		add_filter( 'wp_get_attachment_url', [ $this, 'filter_attachment_url' ], 100, 2 );
 		add_filter( 'wp_read_image_metadata', [ $this, 'read_image_metadata' ], 10, 2 );
 		add_filter( 'wp_image_editors', [ $this, 'filter_editors' ], 9 );
-		add_filter( 'upload_dir', [ $this, 'filter_upload_dir' ], 10, 1 );
+		add_filter( 'upload_dir', [ $this, 'filter_upload_dir' ], 100, 1 );
 
 		add_filter( 'wp_generate_attachment_metadata', [ $this, 'end_upload_s3' ], 10, 2 );
 
@@ -824,8 +824,10 @@ class SecureMedia {
 
 		$this->old_upload_dirs = $dirs;
 
-		$dirs['path']    = str_replace( WP_CONTENT_DIR, 's3://' . Utils\get_settings( 's3_bucket' ), $dirs['path'] );
-		$dirs['basedir'] = str_replace( WP_CONTENT_DIR, 's3://' . Utils\get_settings( 's3_bucket' ), $dirs['basedir'] );
+		$content_dir_name = basename( WP_CONTENT_DIR );
+
+		$dirs['path']    = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['path'] );
+		$dirs['basedir'] = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['basedir'] );
 		$dirs['url']     = str_replace( 's3://' . Utils\get_settings( 's3_bucket' ), S3Client::factory()->get_bucket_url(), $dirs['path'] );
 		$dirs['baseurl'] = str_replace( 's3://' . Utils\get_settings( 's3_bucket' ), S3Client::factory()->get_bucket_url(), $dirs['basedir'] );
 
