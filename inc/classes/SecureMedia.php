@@ -68,6 +68,15 @@ class SecureMedia {
 	}
 
 	/**
+	 * Get old WordPress upload directory information
+	 *
+	 * @return array
+	 */
+	public function get_old_upload_dir() {
+		return _wp_upload_dir();
+	}
+
+	/**
 	 * Redirect media pages on the front end if private and user doesn't have access
 	 */
 	public function maybe_redirect_private_media() {
@@ -788,9 +797,9 @@ class SecureMedia {
 	public function filter_attachment_url( $url, $post_id ) {
 		// This happens for images uploaded when Secure Media was not active
 		if ( empty( get_post_meta( $post_id, 'sm_s3_key', true ) ) ) {
-			$upload_dir = wp_get_upload_dir();
+			$old_upload_dir = $this->get_old_upload_dir();
 
-			return str_replace( S3Client::factory()->get_bucket_url(), dirname( $this->old_upload_dirs['baseurl'] ), $url );
+			return str_replace( S3Client::factory()->get_bucket_url(), dirname( $old_upload_dir['baseurl'] ), $url );
 		}
 
 		$is_private = get_post_meta( $post_id, 'sm_private_media', true );
@@ -837,9 +846,7 @@ class SecureMedia {
 
 		$content_dir_name = basename( WP_CONTENT_DIR );
 
-		$dirs = _wp_upload_dir();
-
-		$this->old_upload_dirs = $dirs;
+		$dirs = $this->get_old_upload_dir();
 
 		$dirs['path']    = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['path'] );
 		$dirs['basedir'] = preg_replace( '#^.*?' . $content_dir_name . '/#', 's3://' . Utils\get_settings( 's3_bucket' ) . '/', $dirs['basedir'] );

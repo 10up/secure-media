@@ -13,6 +13,8 @@
 
 namespace SecureMedia;
 
+use WP_CLI;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -67,4 +69,9 @@ Settings\setup();
 
 SecureMedia::factory();
 
-
+/**
+ * WP CLI Commands
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command( 'secure-media', __NAMESPACE__ . '\Command' );
+}
