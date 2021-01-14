@@ -2,12 +2,18 @@
 
 > Store private media securely in WordPress.
 
+[![Support Level](https://img.shields.io/badge/support-beta-blueviolet.svg)](#support-level)
+
 This plugins stores media associated with non-public posts in S3 with private visibility. Image requests for private media are proxied through WordPress to ensure proper user capabilities. Once a post a published, all it's media is made public and transfered to the WordPress public uploads folder. Media uploaded outside of posts e.g. the media library are made private as well.
 
 ## Setup
 
 * Install plugin.
 * Configure in `Settings > Media`
+
+## Support Level
+
+**Beta:** This project is quite new and we're not sure what our ongoing support level for this will be. Bug reports, feature requests, questions, and pull requests are welcome. If you like this project please let us know, but be cautious using this in a Production environment!
 
 ## Like what you see?
 
