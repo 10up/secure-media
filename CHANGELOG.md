@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Assorted errors (props [@tlovett1](https://github.com/tlovett1)).
 
 ## [1.0.0] - 2020-10-26
-- Initial private release.
+- Initial private release of Secure Media plugin.
 
 [Unreleased]: https://github.com/10up/secure-media/compare/trunk...develop
 [1.0.5]: https://github.com/10up/secure-media/compare/1.0.4...1.0.5
