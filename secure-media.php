@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin Name: Secure Media
- * Description: Store private media securely in WordPress
- * Author: Taylor Lovett, 10up
- * Version: 1.0.5
- * Author URI: https://10up.com
+ * Plugin Name:       Secure Media
+ * Plugin URI:        https://github.com/10up/secure-media
+ * Description:       Store private media securely in WordPress
+ * Version:           1.0.5
+ * Requires at least: 
+ * Requires PHP:      
+ * Author:            10up
+ * Author URI:        https://10up.com
+ * License:           GPLv2 or later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       secure-media
  *
  * Work in this plugin is derived from https://github.com/humanmade/S3-Uploads
  *
- * @package secure-media
+ * @package           secure-media
  */
 
 namespace SecureMedia;
