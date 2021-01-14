@@ -5,10 +5,10 @@ All notable changes to this project will be documented in this file, per [the Ke
 ## [Unreleased]
 
 ## [1.0.5] - TBD
-- Initial public release :tada:
+- Initial public release 🎉.
 
 ## [1.0.4] - 2021-01-04
-### Added
+### Fixed
 - Better S3 error logging (props [@tlovett1](https://github.com/tlovett1)).
 
 ## [1.0.3] - 2021-01-04
@@ -25,10 +25,8 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Assorted bugs (props [@tlovett1](https://github.com/tlovett1)).
 
 ## [1.0.1] - 2020-12-10
-### Changed
-- Redirect single attachment page for private media if not authorized (props [@tlovett1](https://github.com/tlovett1)).
-
 ### Fixed
+- Redirect single attachment page for private media if not authorized (props [@tlovett1](https://github.com/tlovett1)).
 - Assorted errors (props [@tlovett1](https://github.com/tlovett1)).
 
 ## [1.0.0] - 2020-10-26
