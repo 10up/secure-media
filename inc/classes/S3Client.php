@@ -1,9 +1,9 @@
 <?php
 /**
- * S3 wrapper class
+ * S3 Client wrapper class
  *
- * @since  1.0
- * @package  secure-media
+ * @since   1.0
+ * @package secure-media
  */
 
 namespace SecureMedia;
@@ -17,9 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * S3 class
+ * S3 Client class
  */
 class S3Client {
+
 	/**
 	 * S3 client
 	 *
@@ -47,7 +48,7 @@ class S3Client {
 	/**
 	 * Delete object
 	 *
-	 * @param  string $key Object key
+	 * @param string $key Object key
 	 * @return mixed
 	 */
 	public function delete( $key ) {
@@ -104,7 +105,7 @@ class S3Client {
 	/**
 	 * Get object by key
 	 *
-	 * @param  string $key Object key
+	 * @param string $key Object key
 	 * @return mixed
 	 */
 	public function get( $key ) {
@@ -190,4 +191,5 @@ class S3Client {
 
 		return $instance;
 	}
+
 }

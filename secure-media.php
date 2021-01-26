@@ -4,8 +4,8 @@
  * Plugin URI:        https://github.com/10up/secure-media
  * Description:       Store private media securely in WordPress
  * Version:           1.0.5
- * Requires at least: 
- * Requires PHP:      
+ * Requires at least:
+ * Requires PHP:
  * Author:            10up
  * Author URI:        https://10up.com
  * License:           GPLv2 or later

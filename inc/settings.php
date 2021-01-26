@@ -1,6 +1,6 @@
 <?php
 /**
- * Create the AM setting spage
+ * Create the Secure Media setting spage
  *
  * @package secure-media
  * @since   1.0
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Setup actions and filters for all things settings
  *
- * @since  1.0
+ * @since 1.0
  */
 function setup() {
 	if ( SM_IS_NETWORK ) {
@@ -36,15 +36,7 @@ function setup() {
 function ms_save_settings() {
 	global $pagenow;
 
-	if ( ! is_network_admin() ) {
-		return;
-	}
-
-	if ( 'settings.php' !== $pagenow ) {
-		return;
-	}
-
-	if ( ! is_super_admin() ) {
+	if ( ! is_network_admin() || 'settings.php' !== $pagenow || ! is_super_admin() ) {
 		return;
 	}
 
@@ -56,9 +48,7 @@ function ms_save_settings() {
 		return;
 	}
 
-	$setting = sanitize_settings( $_POST['sm_settings'] );
-
-	update_site_option( 'sm_settings', $setting );
+	update_site_option( 'sm_settings', sanitize_settings( $_POST['sm_settings'] ) );
 }
 
 /**
@@ -69,7 +59,8 @@ function ms_save_settings() {
 function ms_settings() {
 	$setting = Utils\get_settings();
 	?>
-	<h2><?php esc_html_e( 'Secure Media', 'tenup' ); ?></h2>
+
+	<h2><?php esc_html_e( 'Secure Media', 'secure-media' ); ?></h2>
 
 	<table class="form-table" role="presentation">
 		<tbody>
@@ -105,13 +96,14 @@ function ms_settings() {
 			</tr>
 		</tbody>
 	</table>
+
 	<?php
 }
 
 /**
  * Sanitize all settings
  *
- * @param  array $settings New settings
+ * @param array $settings New settings
  * @return array
  */
 function sanitize_settings( $settings ) {
@@ -198,7 +190,9 @@ function register_settings() {
 function s3_serve_from_wp() {
 	$value = Utils\get_settings( 's3_serve_from_wp' );
 	?>
+
 	<input name="sm_settings[s3_serve_from_wp]" type="checkbox" id="sm_s3_serve_from_wp" value="1" <?php checked( true, (bool) $value ); ?>> <label for="sm_s3_serve_from_wp"><?php esc_html_e( 'Store and serve public media from WordPress', 'secure-media' ); ?></label>
+
 	<?php
 }
 
@@ -210,7 +204,9 @@ function s3_serve_from_wp() {
 function s3_bucket_field() {
 	$value = Utils\get_settings( 's3_bucket' );
 	?>
+
 	<input name="sm_settings[s3_bucket]" type="text" id="sm_s3_bucket" value="<?php echo esc_attr( $value ); ?>" class="regular-text"> <?php echo esc_html_e( 'Make sure this bucket is created and configured in AWS.', 'secure-media' ); ?>
+
 	<?php
 }
 
@@ -222,7 +218,9 @@ function s3_bucket_field() {
 function s3_region_field() {
 	$value = Utils\get_settings( 's3_region' );
 	?>
+
 	<input name="sm_settings[s3_region]" type="text" id="sm_s3_region" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+
 	<?php
 }
 
@@ -234,7 +232,9 @@ function s3_region_field() {
 function s3_secret_key_field() {
 	$value = Utils\get_settings( 's3_secret_access_key' );
 	?>
+
 	<input name="sm_settings[s3_secret_access_key]" type="password" id="sm_s3_secret_access_key" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+
 	<?php
 }
 
@@ -246,6 +246,8 @@ function s3_secret_key_field() {
 function s3_access_key_field() {
 	$value = Utils\get_settings( 's3_access_key_id' );
 	?>
+
 	<input name="sm_settings[s3_access_key_id]" type="text" id="sm_s3_access_key_id" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+
 	<?php
 }
