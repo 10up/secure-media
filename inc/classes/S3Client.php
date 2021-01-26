@@ -119,6 +119,7 @@ class S3Client {
 				]
 			);
 		} catch ( Exception $e ) {
+			var_dump( $e->getMessage() );
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				trigger_error( $e->getMessage() ); // phpcs:ignore
 			}

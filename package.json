@@ -1,7 +1,14 @@
 {
   "name": "secure-media",
+  "version": "1.0.4",
+  "description": "Store private media securely in WordPress.",
+  "author": {
+    "name": "10up",
+    "email": "opensource@10up.com",
+    "url": "https://10up.com",
+    "role": "developer"
+  },
   "license": "GPL-2.0-or-later",
-  "description": "",
   "devDependencies": {
     "@10up/eslint-config": "^2.0.0",
     "@babel/core": "^7.4.3",
@@ -67,7 +74,6 @@
     "lint": "npm run lint-css && npm run lint-js && npm run lint-php",
     "format": "npm run format-js"
   },
-  "author": "10up",
   "repository": {
     "type": "git",
     "url": "https://github.com/10up/secure-media"
