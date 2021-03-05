@@ -1,12 +1,12 @@
 === Secure Media ===
-Contributors: 10up, tlovett1
-Tags: AWS, S3, secure, private, media
+Contributors:      10up, tlovett1
+Tags:              AWS, S3, secure, private, media
 Requires at least: 
-Tested up to: 5.6
-Requires PHP: 
-Stable tag: 1.0.4
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tested up to:      5.6
+Requires PHP:      5.6
+Stable tag:        1.0.5
+License:           GPLv2 or later
+License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
 Store private media securely in WordPress.
 
