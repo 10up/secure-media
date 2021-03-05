@@ -36,12 +36,12 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 	 * @return true|WP_Error True if loaded; WP_Error on failure.
 	 */
 	public function load() {
-		if ( $this->image instanceof Imagick ) {
+		if ( $this->image instanceof \Imagick ) {
 			return true;
 		}
 
 		if ( ! is_file( $this->file ) && ! preg_match( '|^https?://|', $this->file ) ) {
-			return new WP_Error( 'error_loading_image', __( 'File doesn&#8217;t exist?' ), $this->file );
+			return new \WP_Error( 'error_loading_image', __( 'File doesn&#8217;t exist?', 'secure-media' ), $this->file );
 		}
 
 		$upload_dir = wp_upload_dir();
@@ -60,6 +60,7 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 		$result = parent::load();
 
 		$this->file = $this->remote_filename;
+
 		return $result;
 	}
 
@@ -94,7 +95,7 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 		unlink( $temp_filename );
 
 		if ( ! $copy_result ) {
-			return new WP_Error( 'unable-to-copy-to-s3', 'Unable to copy the temp image to S3' );
+			return new \WP_Error( 'unable-to-copy-to-s3', __( 'Unable to copy the temp image to S3', 'secure-media' ) );
 		}
 
 		return array(
@@ -110,4 +111,5 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 		array_map( 'unlink', $this->temp_files_to_cleanup );
 		parent::__destruct();
 	}
+
 }

@@ -2,7 +2,8 @@
   "name": "10up/secure-media",
   "description": "Store private media securely in WordPress.",
   "type": "wordpress-plugin",
-  "license": ["GPL-2.0-only"],
+  "homepage": "https://10up.com",
+  "license": ["GPL-2.0-or-later"],
   "authors": [
     {
       "name": "Taylor Lovett",
