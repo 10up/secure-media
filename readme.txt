@@ -1,12 +1,12 @@
 === Secure Media ===
-Contributors: 10up, tlovett1
-Tags: AWS, S3, secure, private, media
+Contributors:      10up, tlovett1
+Tags:              AWS, S3, secure, private, media
 Requires at least: 
-Tested up to: 5.6
-Requires PHP: 
-Stable tag: 1.0.4
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tested up to:      5.6
+Requires PHP:      5.6
+Stable tag:        1.0.5
+License:           GPLv2 or later
+License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
 Store private media securely in WordPress.
 
@@ -25,6 +25,11 @@ This plugins stores media associated with non-public posts in S3 with private vi
  
 = 1.0.5 =
 * Initial public release 🎉.
+* **Added:** Plugin banner and icon assets (props [@McCallumDillon](https://github.com/McCallumDillon), [@cgoozen](https://profiles.wordpress.org/cgoozen/)).
+* **Added:** Documentation and GitHub Action updates (props [@jeffpaul](https://profiles.wordpress.org/jeffpaul/), [@dinhtungdu](https://profiles.wordpress.org/dinhtungdu/)).
+* **Changed:** Code spacing, documentation, translated strings, formatting, and other code cleanup tasks (props [@dkotter](https://profiles.wordpress.org/dkotter/)).
+* **Security:** Bump `ini` from 1.3.5 to 1.3.8 (props [@dependabot](https://github.com/apps/dependabot)).
+* **Security:** Update NPM packages for `axios` and `socket.io` to fix vulnerabilities (props [@joshuaabenazer](https://profiles.wordpress.org/joshuaabenazer/)).
 
 = 1.0.4 =
 * **Fixed:** Better S3 error logging (props [@tlovett1](https://profiles.wordpress.org/tlovett1/)).

@@ -4,8 +4,19 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased]
 
-## [1.0.5] - TBD
+## [1.0.5] - 2021-03-05
 - Initial public release 🎉.
+
+### Added
+- Plugin banner and icon assets (props [@McCallumDillon](https://github.com/McCallumDillon), [@cgoozen](https://profiles.wordpress.org/cgoozen/) via [#8](https://github.com/10up/secure-media/pull/8), [#14](https://github.com/10up/secure-media/pull/14)).
+- Documentation and GitHub Action updates (props [@jeffpaul](https://github.com/jeffpaul), [@dinhtungdu](https://github.com/dinhtungdu) via [#16](https://github.com/10up/secure-media/pull/16), [#17](https://github.com/10up/secure-media/pull/17)).
+
+### Changed
+- Code spacing, documentation, translated strings, formatting, and other code cleanup tasks (props [@dkotter](https://github.com/dkotter) via [#15](https://github.com/10up/secure-media/pull/15)).
+
+### Security
+- Bump `ini` from 1.3.5 to 1.3.8 (props [@dependabot](https://github.com/apps/dependabot) via [#10](https://github.com/10up/secure-media/pull/10), [#13](https://github.com/10up/secure-media/pull/13)).
+- Update NPM packages for `axios` and `socket.io` to fix vulnerabilities (props [@joshuaabenazer](https://github.com/joshuaabenazer) via [#18](https://github.com/10up/secure-media/pull/18)).
 
 ## [1.0.4] - 2021-01-04
 ### Fixed

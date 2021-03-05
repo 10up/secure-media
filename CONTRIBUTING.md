@@ -29,7 +29,7 @@ The `develop` branch is the development branch which means it contains the next 
 ## Release instructions
 
 1. Branch: Starting from `develop`, cut a release branch named `release/X.Y.Z` for your changes.
-1. Version bump: Bump the version number in `composer.json`, `package.json`, `readme.txt`, and `secure-media.php` if it does not already reflect the version being released.  Update both the plugin "Version:" property and the plugin `SM_VERSION` constant in `secure-media.php`. 
+1. Version bump: Bump the version number in `package.json`, `readme.txt`, and `secure-media.php` if it does not already reflect the version being released.  Update both the plugin "Version:" property and the plugin `SM_VERSION` constant in `secure-media.php`. 
 1. Changelog: Add/update the changelog in both `readme.txt` and `CHANGELOG.md`.
 1. Props: Update `CREDITS.md` file with any new contributors, confirm maintainers are accurate.
 1. Readme updates: Make any other readme changes as necessary.  `README.md` is geared toward GitHub and `readme.txt` contains WordPress.org-specific content.  The two are slightly different.
@@ -37,7 +37,7 @@ The `develop` branch is the development branch which means it contains the next 
 1. Merge: Make a non-fast-forward merge from your release branch to `develop` (or merge the pull request), then do the same for `develop` into `trunk` (`git checkout trunk && git merge --no-ff develop`).  `trunk` contains the stable development version.
 1. Test: While still on the `trunk` branch, test for functionality locally.
 1. Push: Push your `trunk` branch to GitHub (e.g. `git push origin trunk`).
-1. Release: Create a [new release](https://github.com/10up/secure-media/releases/new), naming the tag and the release with the new version number, and targeting the `trunk` branch.  Paste the changelog from `CHANGELOG.md` into the body of the release and include a link to the closed issues on the milestone (e.g. `https://github.com/10up/secure-media/milestone/#?closed=1`).
+1. Release: Create a [new release](https://github.com/10up/secure-media/releases/new), naming the tag and the release with the new version number, and targeting the `trunk` branch.  Paste the changelog from `CHANGELOG.md` into the body of the release and include a link to the closed issues on the milestone (e.g. `https://github.com/10up/secure-media/milestone/#?closed=1`).  The release should now appear under [releases](https://github.com/10up/secure-media/releases).
 1. SVN: Wait for the [GitHub Action](https://github.com/10up/secure-media/actions/new) to finish deploying to the WordPress.org repository.  If all goes well, users with SVN commit access for that plugin will receive an emailed diff of changes.
 1. Check WordPress.org: Ensure that the changes are live on https://wordpress.org/plugins/secure-media/.  This may take a few minutes.
 1. Close milestone: Edit the [milestone](https://github.com/10up/secure-media/milestone/#) with release date (in the `Due date (optional)` field) and link to GitHub release (in the `Description` field), then close the milestone.
