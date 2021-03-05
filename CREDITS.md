@@ -12,7 +12,7 @@ The following individuals are responsible for curating the list of issues, respo
 
 Thank you to all the people who have already contributed to this repository via bug reports, code, design, ideas, project management, translation, testing, etc.
 
-[Taylor Lovett (@tlovett1)](https://github.com/tlovett1), [Junaid Bhura (@junaidbhura)](https://github.com/junaidbhura), [Darin Kotter (@dkotter)](https://github.com/dkotter), [Jeffrey Paul (@jeffpaul)](https://github.com/jeffpaul), [Dillon McCallum (@McCallumDillon)](https://github.com/McCallumDillon), [Cassi Goozen (@cgoozen)](https://profiles.wordpress.org/cgoozen/).
+[Taylor Lovett (@tlovett1)](https://github.com/tlovett1), [Junaid Bhura (@junaidbhura)](https://github.com/junaidbhura), [Darin Kotter (@dkotter)](https://github.com/dkotter), [Jeffrey Paul (@jeffpaul)](https://github.com/jeffpaul), [Dillon McCallum (@McCallumDillon)](https://github.com/McCallumDillon), [Cassi Goozen (@cgoozen)](https://profiles.wordpress.org/cgoozen/), [Joshua Abenazer (@joshuaabenazer)](https://github.com/joshuaabenazer), [Tung Du (@dinhtungdu)](https://github.com/dinhtungdu).
 
 ## Libraries
 
