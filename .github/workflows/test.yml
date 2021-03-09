@@ -1,0 +1,32 @@
+name: Testing
+
+on:
+  push:
+    branches:
+      - develop
+      - trunk
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  wpa:
+    name: WP Acceptance
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.2'
+        coverage: none
+        tools: composer:v1
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: Tests
+      run: ./run-wpacceptance.sh -l --attempts=3

@@ -20,7 +20,8 @@
     "aws/aws-sdk-php": "^3.114"
   },
   "require-dev": {
-    "10up/phpcs-composer": "dev-master"
+    "10up/phpcs-composer": "dev-master",
+    "10up/wpacceptance": "dev-master"
   },
   "autoload": {
     "psr-4": {

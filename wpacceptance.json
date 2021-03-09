@@ -1,0 +1,19 @@
+{
+    "name": "secure-media",
+    "tests": [
+        "./tests/*.php"
+    ],
+    "enforce_clean_db": false,
+    "environment_instructions": [
+      [
+        "install wordpress where site url is http://secure-media.test and home url is http://secure-media.test",
+        "enable theme where name is twentytwentyone"
+      ]
+    ],
+    "project_path": "%WP_ROOT%/wp-content/plugins/secure-media",
+    "exclude": [
+      "node_modules",
+      "vendor"
+    ],
+    "repository": "10up"
+}
