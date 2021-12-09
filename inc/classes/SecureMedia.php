@@ -610,12 +610,12 @@ class SecureMedia {
 
 		$is_image = wp_attachment_is_image( $id );
 
-		$img_url          = wp_get_attachment_url( $id );
-		$set_img          = false;
-		$meta             = wp_get_attachment_metadata( $id );
-		$width            = 0;
-		$height           = 0;
-		$is_intermediate  = false;
+		$img_url         = wp_get_attachment_url( $id );
+		$set_img         = false;
+		$meta            = wp_get_attachment_metadata( $id );
+		$width           = 0;
+		$height          = 0;
+		$is_intermediate = false;
 
 		$img_url = home_url() . '/' . self::MEDIA_URL_SLUG . '/' . dirname( $s3_key ) . '/';
 
