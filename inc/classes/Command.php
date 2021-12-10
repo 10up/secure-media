@@ -32,8 +32,8 @@ class Command extends WP_CLI_Command {
 
 		WP_CLI::line( esc_html__( 'Starting transfer...', 'secure-media' ) );
 
-		$per_page   = 500;
-		$index      = 0;
+		$per_page    = 500;
+		$index       = 0;
 		$transferred = 0;
 
 		$upload_dir     = wp_get_upload_dir();

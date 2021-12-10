@@ -19,8 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 
-	protected $temp_file_to_cleanup = null;
-
 	/**
 	 * Hold on to a reference of all temp local files.
 	 *
@@ -68,6 +66,11 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 	 * Imagick by default can't handle s3:// paths
 	 * for saving images. We have instead save it to a file file,
 	 * then copy it to the s3:// path as a workaround.
+	 *
+	 * @param Imagick $image      Image.
+	 * @param string  $filename   File Name.
+	 * @param string  $mime_type  File Mimetype.
+	 * @return array|WP_Error
 	 */
 	protected function _save( $image, $filename = null, $mime_type = null ) {
 		list( $filename, $extension, $mime_type ) = $this->get_output_format( $filename, $mime_type );
@@ -107,6 +110,9 @@ class S3ImageEditorImagick extends WP_Image_Editor_Imagick {
 		);
 	}
 
+	/**
+	 * Cleanup temp local files.
+	 */
 	public function __destruct() {
 		array_map( 'unlink', $this->temp_files_to_cleanup );
 		parent::__destruct();
